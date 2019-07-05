@@ -14,6 +14,8 @@ import pl.grapeup.mika.tutorial.dto.ReservationDTO;
 import pl.grapeup.mika.tutorial.model.Reservation;
 import pl.grapeup.mika.tutorial.service.ReservationService;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -39,7 +41,7 @@ public class ReservationControllerTest {
         Reservation r1 = Reservation.builder().name("R1").build();
         Reservation r2 = Reservation.builder().name("R2").build();
 
-        when(reservationServiceMock.getAll()).thenReturn(Arrays.asList(r1,r2));
+        when(reservationServiceMock.getAll()).thenReturn(Arrays.asList(r1, r2));
 
         mockMvc.perform(get("/api/v1/reservations"))
                 .andExpect(status().isOk())
@@ -54,8 +56,9 @@ public class ReservationControllerTest {
 
     @Test
     public void testReservationCreate() throws Exception {
-        Reservation newReservation = Reservation.builder().name("NewReservation").build();
-        when(reservationServiceMock.add(any(ReservationDTO.class))).thenReturn(newReservation);
+        ReservationDTO newReservation =
+                ReservationDTO.builder().name("NewReservation").numberOfPeople(2).startDate(LocalDate.now()).endDate(LocalDate.now().plus(2, ChronoUnit.DAYS)).build();
+        when(reservationServiceMock.add(any(ReservationDTO.class))).thenReturn(Reservation.fromDTO(newReservation));
 
         mockMvc.perform(post("/api/v1/reservations")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -70,7 +73,10 @@ public class ReservationControllerTest {
 
     @Test
     public void testReservationDelete() throws Exception {
-        ReservationDTO toDelete = ReservationDTO.builder().name("DELETE").build();
+        ReservationDTO toDelete =
+                ReservationDTO.builder().name("DELETE").numberOfPeople(2).startDate(LocalDate.now()).endDate(LocalDate.now().plus(2,
+                        ChronoUnit.DAYS)).build();
+
         doNothing().when(reservationServiceMock).delete((any(ReservationDTO.class)));
 
         mockMvc.perform(delete("/api/v1/reservations")

@@ -19,10 +19,10 @@ public class Reservation {
     private Long id;
     private String name;
     private Integer numberOfPeople;
-    private LocalDate startData;
+    private LocalDate startDate;
     private LocalDate endDate;
 
     public static Reservation fromDTO(ReservationDTO dto) {
-       return Reservation.builder().name(dto.getName()).numberOfPeople(dto.getNumberOfPeople()).startData(dto.getStartData()).endDate(dto.getEndDate()).build();
+       return Reservation.builder().name(dto.getName()).numberOfPeople(dto.getNumberOfPeople()).startDate(dto.getStartDate()).endDate(dto.getEndDate()).build();
     }
 }

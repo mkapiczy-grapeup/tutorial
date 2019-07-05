@@ -26,8 +26,8 @@ public class ReservationController {
 
     @RequestMapping(method= RequestMethod.POST)
     @ResponseBody
-    public Reservation create(@Valid @RequestBody ReservationDTO reservation) {
-        return reservationService.add(reservation).get();
+    public Reservation create(@RequestBody ReservationDTO reservation) {
+        return reservationService.add(reservation);
     }
 
     @RequestMapping(method= RequestMethod.DELETE)
@@ -48,7 +48,7 @@ public class ReservationController {
 
     private ReservationDTO createDTO(Reservation model) {
         ReservationDTO dto =
-                ReservationDTO.builder().id(model.getId()).name(model.getName()).numberOfPeople(model.getNumberOfPeople()).startData(model.getStartData()).endDate(model.getEndDate()).build();
+                ReservationDTO.builder().name(model.getName()).numberOfPeople(model.getNumberOfPeople()).startDate(model.getStartDate()).endDate(model.getEndDate()).build();
         return dto;
     }
 }

@@ -7,7 +7,6 @@ import pl.grapeup.mika.tutorial.model.Reservation;
 import pl.grapeup.mika.tutorial.repository.ReservationRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -16,10 +15,10 @@ public class ReservationServiceImpl implements ReservationService {
     private ReservationRepository repository;
 
     @Override
-    public Optional<Reservation> add(ReservationDTO toAdd) {
+    public Reservation add(ReservationDTO toAdd) {
         if(validateNewReservation(toAdd))
-            return Optional.of(repository.save(Reservation.fromDTO(toAdd)));
-        return Optional.empty();
+            return repository.save(Reservation.fromDTO(toAdd));
+        return null;
     }
 
     @Override
@@ -33,6 +32,6 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private boolean validateNewReservation(ReservationDTO reservation) {
-        return reservation.getStartData().isBefore(reservation.getEndDate());
+        return reservation.getStartDate().isBefore(reservation.getEndDate());
     }
 }
