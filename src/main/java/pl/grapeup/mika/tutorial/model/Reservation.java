@@ -4,10 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import pl.grapeup.mika.tutorial.dto.ReservationDTO;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -17,12 +14,20 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String name;
+
     private Integer numberOfPeople;
+
     private LocalDate startDate;
+
     private LocalDate endDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private Room room;
+
     public static Reservation fromDTO(ReservationDTO dto) {
-       return Reservation.builder().name(dto.getName()).numberOfPeople(dto.getNumberOfPeople()).startDate(dto.getStartDate()).endDate(dto.getEndDate()).build();
+        return Reservation.builder().name(dto.getName()).numberOfPeople(dto.getNumberOfPeople()).startDate(dto.getStartDate()).endDate(dto.getEndDate()).build();
     }
 }

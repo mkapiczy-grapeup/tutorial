@@ -18,19 +18,31 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    @RequestMapping(method= RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<ReservationDTO> getAll() {
-     return createDTOs(reservationService.getAll());
+        return createDTOs(reservationService.getAll());
     }
 
-    @RequestMapping(method= RequestMethod.POST)
+    @RequestMapping(value = "/{reservationId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ReservationDTO getById(@PathVariable Long reservationId) {
+        return createDTO(reservationService.getById(reservationId));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, params = "roomId")
+    @ResponseBody
+    public List<ReservationDTO> getByRoomId(@RequestParam Long roomId) {
+        return createDTOs(reservationService.getByRoom(roomId));
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public Reservation create(@RequestBody ReservationDTO reservation) {
         return reservationService.add(reservation);
     }
 
-    @RequestMapping(method= RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
     public void delete(@Valid @RequestBody ReservationDTO reservation) {
         reservationService.delete(reservation);
@@ -39,7 +51,7 @@ public class ReservationController {
     private List<ReservationDTO> createDTOs(List<Reservation> reservations) {
         List<ReservationDTO> dtos = new ArrayList<>();
 
-        for (Reservation model: reservations) {
+        for (Reservation model : reservations) {
             dtos.add(createDTO(model));
         }
 
