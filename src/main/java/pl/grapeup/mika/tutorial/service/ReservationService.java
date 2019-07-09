@@ -14,6 +14,9 @@ public interface ReservationService {
     List<Reservation> getAll();
 
     Reservation getById(Long id);
+
     List<Reservation> getByRoom(Long roomId);
+
+    boolean validateNewReservation(ReservationDTO reservation);
 
 }

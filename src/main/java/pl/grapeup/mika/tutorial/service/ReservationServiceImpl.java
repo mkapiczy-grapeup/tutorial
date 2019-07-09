@@ -2,13 +2,14 @@ package pl.grapeup.mika.tutorial.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.grapeup.mika.tutorial.dto.ReservationDTO;
+import pl.grapeup.mika.tutorial.exceptions.NoRoomAvailableException;
 import pl.grapeup.mika.tutorial.model.Reservation;
 import pl.grapeup.mika.tutorial.model.Room;
+import pl.grapeup.mika.tutorial.model.RoomState;
 import pl.grapeup.mika.tutorial.repository.ReservationRepository;
-import pl.grapeup.mika.tutorial.repository.RoomRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +20,21 @@ public class ReservationServiceImpl implements ReservationService {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
+    private RoomService roomService;
 
     @Override
+    @Transactional
     public Reservation add(ReservationDTO toAdd) {
-        if(validateNewReservation(toAdd))
-            return reservationRepository.save(Reservation.fromDTO(toAdd));
-        return null;
+        Reservation newReservation = Reservation.fromDTO(toAdd);
+        Room room = roomService.getRoomForNewReservation(newReservation.getNumberOfPeople());
+        if (room != null) {
+            room.setState(RoomState.OCCUPIED);
+            newReservation.setRoom(room);
+            return reservationRepository.save(newReservation);
+        } else {
+            throw new NoRoomAvailableException();
+        }
+
     }
 
     @Override
@@ -40,16 +49,17 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Reservation getById(Long id) {
-        return reservationRepository.getOne(id);
+        Optional<Reservation> optionalReservation = reservationRepository.findById(id);
+        return optionalReservation != null && optionalReservation.isPresent() ? optionalReservation.get() : null;
     }
 
     @Override
     public List<Reservation> getByRoom(Long roomId) {
-        return Optional.ofNullable(roomRepository.getOne(roomId)).map(Room::getReservations).orElse(new ArrayList<>());
+        return roomService.getRoomReservations(roomId);
     }
 
-
-    private boolean validateNewReservation(ReservationDTO reservation) {
+    @Override
+    public boolean validateNewReservation(ReservationDTO reservation) {
         return reservation.getStartDate().isBefore(reservation.getEndDate());
     }
 }

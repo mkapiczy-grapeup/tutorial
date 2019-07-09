@@ -1,15 +1,17 @@
 package pl.grapeup.mika.tutorial.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import pl.grapeup.mika.tutorial.dto.ReservationDTO;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Data
-@Builder
+@Builder(toBuilder = true)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Setter
+@Getter
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

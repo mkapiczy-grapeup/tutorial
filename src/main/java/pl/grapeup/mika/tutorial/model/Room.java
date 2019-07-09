@@ -1,14 +1,16 @@
 package pl.grapeup.mika.tutorial.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Data
-@Builder
+@Builder(toBuilder = true)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Setter
+@Getter
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,4 +22,9 @@ public class Room {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "room")
     private List<Reservation> reservations;
+
+    @Enumerated(EnumType.STRING)
+    private RoomState state;
+
+    private Long roomNumber;
 }

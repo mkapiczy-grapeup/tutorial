@@ -91,6 +91,7 @@ public class ReservationControllerTest {
         ReservationDTO newReservation =
                 ReservationDTO.builder().name("NewReservation").numberOfPeople(2).startDate(LocalDate.now()).endDate(LocalDate.now().plus(2, ChronoUnit.DAYS)).build();
         when(reservationServiceMock.add(any(ReservationDTO.class))).thenReturn(Reservation.fromDTO(newReservation));
+        when(reservationServiceMock.validateNewReservation(any(ReservationDTO.class))).thenReturn(true);
 
         mockMvc.perform(post("/api/v1/reservations")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -100,6 +101,7 @@ public class ReservationControllerTest {
                 .andExpect(jsonPath("$.name", is("NewReservation")));
         ArgumentCaptor<ReservationDTO> resCaptor = ArgumentCaptor.forClass(ReservationDTO.class);
         verify(reservationServiceMock, times(1)).add(resCaptor.capture());
+        verify(reservationServiceMock, times(1)).validateNewReservation(resCaptor.capture());
         verifyNoMoreInteractions(reservationServiceMock);
     }
 
