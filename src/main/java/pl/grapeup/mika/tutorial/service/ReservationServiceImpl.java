@@ -38,8 +38,8 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public void delete(ReservationDTO toDelete) {
-        reservationRepository.delete(Reservation.fromDTO(toDelete));
+    public void delete(Long reservationId) {
+        reservationRepository.deleteById(reservationId);
     }
 
     @Override

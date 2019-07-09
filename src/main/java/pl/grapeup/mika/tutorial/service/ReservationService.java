@@ -9,7 +9,7 @@ public interface ReservationService {
 
     Reservation add(ReservationDTO newReservation);
 
-    void delete(ReservationDTO reservation);
+    void delete(Long reservationId);
 
     List<Reservation> getAll();
 

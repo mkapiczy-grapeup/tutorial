@@ -8,7 +8,6 @@ import pl.grapeup.mika.tutorial.exceptions.ReservationNotFoundException;
 import pl.grapeup.mika.tutorial.model.Reservation;
 import pl.grapeup.mika.tutorial.service.ReservationService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +18,6 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @GetMapping
-    @ResponseBody
     public List<ReservationDTO> getAll() {
         return ReservationDTO.createDTOs(reservationService.getAll());
     }
@@ -48,8 +46,8 @@ public class ReservationController {
         }
     }
 
-    @DeleteMapping
-    public void delete(@Valid @RequestBody ReservationDTO reservation) {
-        reservationService.delete(reservation);
+    @DeleteMapping(value ="/{reservationId}")
+    public void delete(@PathVariable Long reservationId) {
+        reservationService.delete(reservationId);
     }
 }

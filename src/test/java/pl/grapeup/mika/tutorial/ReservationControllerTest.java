@@ -111,15 +111,14 @@ public class ReservationControllerTest {
                 ReservationDTO.builder().name("DELETE").numberOfPeople(2).startDate(LocalDate.now()).endDate(LocalDate.now().plus(2,
                         ChronoUnit.DAYS)).build();
 
-        doNothing().when(reservationServiceMock).delete((any(ReservationDTO.class)));
+        doNothing().when(reservationServiceMock).delete(anyLong());
 
-        mockMvc.perform(delete("/api/v1/reservations")
+        mockMvc.perform(delete("/api/v1/reservations/{reservationId}",1)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(toDelete)))
                 .andExpect(status().isOk());
 
-        ArgumentCaptor<ReservationDTO> resCaptor = ArgumentCaptor.forClass(ReservationDTO.class);
-        verify(reservationServiceMock, times(1)).delete(resCaptor.capture());
+        verify(reservationServiceMock, times(1)).delete(anyLong());
         verifyNoMoreInteractions(reservationServiceMock);
     }
 }
