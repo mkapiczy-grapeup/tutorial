@@ -9,9 +9,13 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("ratings")
@@ -34,8 +38,20 @@ public class RatingController {
     public String callService() {
         RestTemplate restTemplate = restTemplateBuilder.build();
         InstanceInfo instanceInfo = client.getNextServerFromEureka(ratingServiceName, false);
-        String baseUrl = instanceInfo.getHomePageUrl();
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl + ratingsEndpoint, HttpMethod.GET, null, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(instanceInfo.getHomePageUrl() + ratingsEndpoint, HttpMethod.GET, null, String.class);
+        return response.getBody();
+    }
+
+    @GetMapping(value = "/{roomId}")
+    public String getRating(@PathVariable Long roomId) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        InstanceInfo instanceInfo = client.getNextServerFromEureka(ratingServiceName, false);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("roomId", roomId);
+
+        ResponseEntity<String> response = restTemplate.exchange(instanceInfo.getHomePageUrl() + ratingsEndpoint + "/{roomId}",
+                HttpMethod.GET, null, String.class, params);
         return response.getBody();
     }
 }
