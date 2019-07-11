@@ -5,6 +5,7 @@ import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("ratings")
+@RefreshScope
 public class RatingController {
 
     @Autowired
@@ -22,7 +24,7 @@ public class RatingController {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
-    @Value("${custom.endpoint.ratings}")
+    @Value("${custom.endpoints.ratings}")
     private String ratingsEndpoint;
 
     @Value("${custom.service-name.ratings}")
