@@ -24,7 +24,7 @@ public class RatingController {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
-    @Value("${custom.endpoints.ratings}")
+    @Value("${custom.endpoint.ratings}")
     private String ratingsEndpoint;
 
     @Value("${custom.service-name.ratings}")
