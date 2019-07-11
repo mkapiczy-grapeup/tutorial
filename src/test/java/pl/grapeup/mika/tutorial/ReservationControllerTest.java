@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {TutorialApplication.class})
 @WebAppConfiguration
 @AutoConfigureMockMvc
+@TestPropertySource(locations="classpath:application-test.properties")
 public class ReservationControllerTest {
 
     @MockBean
@@ -44,7 +46,7 @@ public class ReservationControllerTest {
 
         when(reservationServiceMock.getAll()).thenReturn(Arrays.asList(r1, r2));
 
-        mockMvc.perform(get("/api/v1/reservations"))
+        mockMvc.perform(get("/reservations"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -60,7 +62,7 @@ public class ReservationControllerTest {
         Reservation r1 = Reservation.builder().name("R1").build();
         when(reservationServiceMock.getById(anyLong())).thenReturn(r1);
 
-        mockMvc.perform(get("/api/v1/reservations/{reservationId}", 1))
+        mockMvc.perform(get("/reservations/{reservationId}", 1))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.name", is("R1")));
@@ -75,7 +77,7 @@ public class ReservationControllerTest {
         Reservation r2 = Reservation.builder().name("R2").room(Room.builder().id(5l).build()).build();
         when(reservationServiceMock.getByRoom(anyLong())).thenReturn(Arrays.asList(r1, r2));
 
-        mockMvc.perform(get("/api/v1/reservations").param("roomId", "5"))
+        mockMvc.perform(get("/reservations").param("roomId", "5"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -93,7 +95,7 @@ public class ReservationControllerTest {
         when(reservationServiceMock.add(any(ReservationDTO.class))).thenReturn(Reservation.fromDTO(newReservation));
         when(reservationServiceMock.validateNewReservation(any(ReservationDTO.class))).thenReturn(true);
 
-        mockMvc.perform(post("/api/v1/reservations")
+        mockMvc.perform(post("/reservations")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(newReservation)))
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
@@ -113,7 +115,7 @@ public class ReservationControllerTest {
 
         doNothing().when(reservationServiceMock).delete(anyLong());
 
-        mockMvc.perform(delete("/api/v1/reservations/{reservationId}",1)
+        mockMvc.perform(delete("/reservations/{reservationId}",1)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(toDelete)))
                 .andExpect(status().isOk());
