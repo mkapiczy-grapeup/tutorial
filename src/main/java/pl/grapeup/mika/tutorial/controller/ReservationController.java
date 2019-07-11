@@ -11,7 +11,7 @@ import pl.grapeup.mika.tutorial.service.ReservationService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/reservations")
+@RequestMapping("reservations")
 public class ReservationController {
 
     @Autowired

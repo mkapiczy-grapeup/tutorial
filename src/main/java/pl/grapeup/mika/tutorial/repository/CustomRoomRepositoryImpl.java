@@ -15,10 +15,10 @@ public class CustomRoomRepositoryImpl implements CustomRoomRepository {
 
     @Override
     public List<Room> getAvailableRoomsForRoomClass(RoomClass roomClass) {
-        TypedQuery<Room> q = entityManager.createQuery("SELECT r FROM Room r WHERE r.roomClass = :roomClass AND r.state = :roomState",
+        TypedQuery<Room> q = entityManager.createQuery("SELECT r FROM Room r WHERE r.roomClass = :roomClass AND r.state = :availableState",
                 Room.class);
         q.setParameter("roomClass", roomClass);
-        q.setParameter("roomState", RoomState.AVAILABLE);
+        q.setParameter("availableState", RoomState.AVAILABLE);
         List<Room> results = q.getResultList();
         return results;
     }
