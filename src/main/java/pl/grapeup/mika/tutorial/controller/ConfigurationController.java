@@ -21,8 +21,6 @@ public class ConfigurationController {
 
     @GetMapping
     public String printConfig() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(properties.getProperty()).append(" || ").append(someOtherProperty);
-        return sb.toString();
+        return properties.getProperty() + " || " + someOtherProperty;
     }
 }

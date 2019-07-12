@@ -22,11 +22,9 @@ import java.util.Map;
 @RefreshScope
 public class RatingController {
 
-    @Autowired
-    private EurekaClient client;
+    private final EurekaClient client;
 
-    @Autowired
-    private RestTemplateBuilder restTemplateBuilder;
+    private final RestTemplateBuilder restTemplateBuilder;
 
     @Value("${custom.endpoint.ratings}")
     private String ratingsEndpoint;
@@ -34,11 +32,17 @@ public class RatingController {
     @Value("${custom.service-name.ratings}")
     private String ratingServiceName;
 
+    public RatingController(EurekaClient client, RestTemplateBuilder restTemplateBuilder) {
+        this.client = client;
+        this.restTemplateBuilder = restTemplateBuilder;
+    }
+
     @GetMapping
     public String getAllRatings() {
         RestTemplate restTemplate = restTemplateBuilder.build();
         InstanceInfo ratingServiceInstance = client.getNextServerFromEureka(ratingServiceName, false);
-        ResponseEntity<String> response = restTemplate.exchange(ratingServiceInstance.getHomePageUrl() + ratingsEndpoint, HttpMethod.GET,
+        ResponseEntity<String> response = restTemplate.exchange(String.format("%s%s", ratingServiceInstance.getHomePageUrl(),
+                ratingsEndpoint), HttpMethod.GET,
                 null, String.class);
         return response.getBody();
     }

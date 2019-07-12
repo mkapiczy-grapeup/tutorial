@@ -3,6 +3,7 @@ package pl.grapeup.mika.tutorial.dto;
 import lombok.Builder;
 import lombok.Data;
 import pl.grapeup.mika.tutorial.model.Reservation;
+import pl.grapeup.mika.tutorial.validation.StartEndDateConstraint;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Builder
+@StartEndDateConstraint
 public class ReservationDTO {
     @NotEmpty
     private String name;
@@ -25,7 +27,7 @@ public class ReservationDTO {
     private LocalDate endDate;
 
     public static List<ReservationDTO> createDTOs(List<Reservation> reservations) {
-        return reservations.stream().map(r -> createDTO(r)).collect(Collectors.toList());
+        return reservations.stream().map(ReservationDTO::createDTO).collect(Collectors.toList());
     }
 
     public static ReservationDTO createDTO(Reservation model) {
