@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.grapeup.mika.tutorial.dto.ReservationDTO;
 import pl.grapeup.mika.tutorial.exceptions.NoRoomAvailableException;
+import pl.grapeup.mika.tutorial.exceptions.ReservationNotFoundException;
 import pl.grapeup.mika.tutorial.model.Reservation;
 import pl.grapeup.mika.tutorial.model.Room;
 import pl.grapeup.mika.tutorial.model.RoomState;
 import pl.grapeup.mika.tutorial.repository.ReservationRepository;
+import pl.grapeup.mika.tutorial.repository.RoomRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
     @Autowired
     private RoomService roomService;
@@ -39,7 +44,17 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void delete(Long reservationId) {
-        reservationRepository.deleteById(reservationId);
+        Reservation reservationToDelete = reservationRepository.getOne(reservationId);
+        if (reservationToDelete != null) {
+            Room room = reservationToDelete.getRoom();
+            if (room != null) {
+                room.setState(RoomState.AVAILABLE);
+                roomRepository.save(room);
+            }
+            reservationRepository.deleteById(reservationId);
+        } else {
+            throw new ReservationNotFoundException();
+        }
     }
 
     @Override

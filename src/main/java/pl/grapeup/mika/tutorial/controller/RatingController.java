@@ -35,23 +35,24 @@ public class RatingController {
     private String ratingServiceName;
 
     @GetMapping
-    public String callService() {
+    public String getAllRatings() {
         RestTemplate restTemplate = restTemplateBuilder.build();
-        InstanceInfo instanceInfo = client.getNextServerFromEureka(ratingServiceName, false);
-        ResponseEntity<String> response = restTemplate.exchange(instanceInfo.getHomePageUrl() + ratingsEndpoint, HttpMethod.GET, null, String.class);
+        InstanceInfo ratingServiceInstance = client.getNextServerFromEureka(ratingServiceName, false);
+        ResponseEntity<String> response = restTemplate.exchange(ratingServiceInstance.getHomePageUrl() + ratingsEndpoint, HttpMethod.GET,
+                null, String.class);
         return response.getBody();
     }
 
     @GetMapping(value = "/{roomId}")
-    public String getRating(@PathVariable Long roomId) {
+    public String getRatingForRoom(@PathVariable Long roomId) {
         RestTemplate restTemplate = restTemplateBuilder.build();
-        InstanceInfo instanceInfo = client.getNextServerFromEureka(ratingServiceName, false);
+        InstanceInfo ratingServiceInstance = client.getNextServerFromEureka(ratingServiceName, false);
 
+        final String getRatingEndpoint = ratingServiceInstance.getHomePageUrl() + ratingsEndpoint + "/{roomId}";
         Map<String, Object> params = new HashMap<>();
         params.put("roomId", roomId);
 
-        ResponseEntity<String> response = restTemplate.exchange(instanceInfo.getHomePageUrl() + ratingsEndpoint + "/{roomId}",
-                HttpMethod.GET, null, String.class, params);
+        ResponseEntity<String> response = restTemplate.exchange(getRatingEndpoint, HttpMethod.GET, null, String.class, params);
         return response.getBody();
     }
 }
