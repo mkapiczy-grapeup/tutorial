@@ -1,9 +1,7 @@
 package pl.grapeup.mika.tutorial.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.grapeup.mika.tutorial.dto.ReservationDTO;
-import pl.grapeup.mika.tutorial.exceptions.InvalidReservationRequestException;
 import pl.grapeup.mika.tutorial.exceptions.ReservationNotFoundException;
 import pl.grapeup.mika.tutorial.model.Reservation;
 import pl.grapeup.mika.tutorial.service.ReservationService;
